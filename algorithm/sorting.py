@@ -150,3 +150,109 @@ class Map(object):
 # 计算查找不成功的次数就直接找关键字到第一个地址上关键字为空的距离即可,然后计算所有查找的和再处以项数（即所有可能的情况）
 
 # sorting
+
+
+# Bubble Sort
+def bubble_sort(num_list):
+    l_len = len(num_list) - 1
+    for i in range(l_len):
+        for j in range(l_len-i):
+            if num_list[j] > num_list[j+1]:
+                temp = num_list[j+1]
+                num_list[j+1] = num_list[j]
+                num_list[j] = temp
+    return num_list
+
+
+def short_bubble_sort(num_list):
+    l_len = len(num_list) - 1
+    for i in range(l_len):
+        exchange = True
+        for j in range(l_len-i):
+            if num_list[j] > num_list[j+1]:
+                exchange = False
+                temp = num_list[j+1]
+                num_list[j+1] = num_list[j]
+                num_list[j] = temp
+        if exchange:
+            break
+    return num_list
+
+# select sort
+
+
+def select_sort(num_list):
+    l_len = len(num_list)-1
+    for i in range(l_len+1):
+        max_pos = 0
+        for j in range(l_len-i+1):
+            if num_list[j] > num_list[max_pos]:
+                max_pos = j
+        temp = num_list[l_len-i]
+        num_list[l_len-i] = num_list[max_pos]
+        num_list[max_pos] = temp
+    return num_list
+
+
+
+# insert sort
+
+
+def insert_sort(num_list):
+    for index in range(1, len(num_list)):
+        current_value = num_list[index]
+        position = index
+
+        while position > 0 and num_list[position - 1] > current_value:
+            num_list[position] = num_list[position - 1]
+            position = position - 1
+
+        num_list[position] = current_value
+
+
+
+# quick sort
+
+
+def quickSort(alist):
+   quickSortHelper(alist,0,len(alist)-1)
+
+def quickSortHelper(alist,first,last):
+   if first<last:
+
+       splitpoint = partition(alist,first,last)
+
+       quickSortHelper(alist,first,splitpoint-1)
+       quickSortHelper(alist,splitpoint+1,last)
+
+
+def partition(alist,first,last):
+   pivotvalue = alist[first]
+
+   leftmark = first+1
+   rightmark = last
+
+   done = False
+   while not done:
+
+       while leftmark <= rightmark and alist[leftmark] <= pivotvalue:
+           leftmark = leftmark + 1
+
+       while alist[rightmark] >= pivotvalue and rightmark >= leftmark:
+           rightmark = rightmark -1
+
+       if rightmark < leftmark:
+           done = True
+       else:
+           temp = alist[leftmark]
+           alist[leftmark] = alist[rightmark]
+           alist[rightmark] = temp
+
+   temp = alist[first]
+   alist[first] = alist[rightmark]
+   alist[rightmark] = temp
+
+
+   return rightmark
+
+
