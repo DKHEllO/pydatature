@@ -25,7 +25,7 @@ class Stack(object):
         Delete a new item to the top of the stack
         :return: 
         """
-        self.items.pop()
+        return self.items.pop(-1)
 
     def is_empty(self):
         """
@@ -441,6 +441,219 @@ class Graph(object):
         :return: list of Vertex
         """
         return self.vtx_list.keys()
+
+
+# Binary Heap
+"""
+    The heap looks like a tree, but when we implement it, we use only a single list as an internal representation. The 
+    binary heap has two common variants: the smallest heap (where the smallest key is always in front) and the largest 
+    heap (where the largest key is always in front)
+    
+    In order for our heap to work effectively, we will use the logarithmic nature of the binary tree to represent our 
+    heap. In order to ensure logarithmic performance, we must keep the balance of the tree. The balanced binary tree 
+    has roughly the same number of nodes in the left and right subtrees of the root. In our heap implementation, we 
+    maintain the balance of the tree by creating a complete binary tree. A complete binary tree is a tree, where each 
+    layer has all its nodes, except for the lowest level of the tree, filled from left to right.Another interesting 
+    property of a complete binary tree is that we can use a single list to represent it. We don't need to use nodes 
+    and references, or even lists of lists. Because the tree is complete, the parent's left child (at position p) is 
+    the node found in position 2p in the list. Similarly, the position of the right child of the parent node in the 
+    list 2p + 1
+    
+    The heap's sorting properties are as follows: In the heap, for each node x with a parent p, the key in p is less 
+    than or equal to the key in x
+"""
+# Smallest Heap
+
+
+class SmallestHeap(object):
+    """ 
+    Smallest Heap: where the smallest key is always in front
+    heap_list: The entire binary heap is represented by a single list. An empty binary heap has a single zero. This zero 
+    is used for simple integer division later.
+    size: Binary heap size
+    """
+    def __init__(self):
+        self.heap_list = [0]
+        self.size = 0
+
+    def insert(self, k):
+        """
+        insert a value to binary heap
+        :param k: the specified value
+        :return: 
+        """
+        self.size += 1
+        self.heap_list.append(k)
+        i = self.size
+        while i//2:
+            if self.heap_list[i] < self.heap_list[i//2]:
+                temp = self.heap_list[i//2]
+                self.heap_list[i//2] = self.heap_list[i]
+                self.heap_list[i//2] = temp
+            i = i//2
+
+    def find_min(self, i):
+        """
+        Find the smallest subtree position of specified position   
+        :param i: specified position
+        :return: int(smallest subtree position)
+        """
+        if i * 2 + 1 > self.size:
+            return i * 2 + 1
+        else:
+            if self.heap_list[i * 2] > self.heap_list[i * 2 + 1]:
+                return i * 2 + 1
+            else:
+                return i * 2
+
+    def del_min(self):
+        """
+        Del the smallest value in the binary heap, fill the last value to the root after del the smallest value to keep 
+        our heap structure. Then restore heap order by pushing the new root node down the tree to its correct position. 
+        :return: None
+        """
+        tail = self.heap_list.pop()
+        self.size -= 1
+        self.heap_list[1] = tail
+        i = 1
+        while i*2 <= self.size:
+            min_pos = self.find_min(i)
+            if self.heap_list[min_pos] < self.heap_list[i]:
+                temp = self.heap_list[i]
+                self.heap_list[i] = self.heap_list[min_pos]
+                self.heap_list[min_pos] = temp
+            i = min_pos
+
+    def is_empty(self):
+        """
+        Return the heap is empty
+        :return: False or True 
+        """
+        return self.heap_list == [0]
+
+    def size(self):
+        """
+        Return size of heap
+        :return: int
+        """
+        return self.size
+
+    def build_list(self, new_list):
+        """
+        Build a smallest heap from specified list
+        :param new_list: specified list
+        :return: 
+        """
+        list_len = len(new_list)
+        self.size = list_len
+        i = list_len // 2
+        self.heap_list = [0] + new_list
+        while i > 0:
+            min_pos = self.find_min(i)
+            if self.heap_list[min_pos] < self.heap_list[i]:
+                temp = self.heap_list[i]
+                self.heap_list[i] = self.heap_list[min_pos]
+                self.heap_list[min_pos] = temp
+            i = i - 1
+
+
+# Largest Heap
+
+
+class LargestHeap(object):
+    """ 
+    Largest Heap: where the largest key is always in front
+    heap_list: The entire binary heap is represented by a single list. An empty binary heap has a single zero. This zero 
+    is used for simple integer division later.
+    size: Binary heap size
+    """
+    def __init__(self):
+        self.heap_list = []
+        self.size = 0
+
+    def insert(self, k):
+        """
+        insert a value to binary heap
+        :param k: the specified value
+        :return: 
+        """
+        self.size += 1
+        self.heap_list.append(k)
+        i = self.size
+        if i == 1:
+            pass
+        else:
+            while i//2:
+                if self.heap_list[i] > self.heap_list[i//2]:
+                    temp = self.heap_list[i//2]
+                    self.heap_list[i//2] = self.heap_list[i]
+                    self.heap_list[i//2] = temp
+                i = i//2
+
+    def find_max(self, i):
+        """
+        Find the largest subtree position of specified position   
+        :param i: specified position
+        :return: int(smallest subtree position)
+        """
+        if i * 2 + 1 > self.size:
+            return i * 2 + 1
+        else:
+            if self.heap_list[i * 2] < self.heap_list[i * 2 + 1]:
+                return i * 2 + 1
+            else:
+                return i * 2
+
+    def del_max(self):
+        """
+        Del the largest value in the binary heap, fill the last value to the root after del the largest value to keep 
+        our heap structure. Then restore heap order by pushing the new root node down the tree to its correct position. 
+        :return: None
+        """
+        tail = self.heap_list.pop()
+        self.size -= 1
+        self.heap_list[1] = tail
+        i = 1
+        while i*2 <= self.size:
+            max_pos = self.find_max(i)
+            if self.heap_list[max_pos] > self.heap_list[i]:
+                temp = self.heap_list[i]
+                self.heap_list[i] = self.heap_list[max_pos]
+                self.heap_list[max_pos] = temp
+            i = max_pos
+
+    def is_empty(self):
+        """
+        Return the heap is empty
+        :return: False or True 
+        """
+        return self.heap_list == [0]
+
+    def size(self):
+        """
+        Return size of heap
+        :return: int
+        """
+        return self.size
+
+    def build_list(self, new_list):
+        """
+        Build a largest heap from specified list
+        :param new_list: specified list
+        :return: 
+        """
+        list_len = len(new_list)
+        self.size = list_len
+        i = list_len // 2
+        self.heap_list = [0] + new_list
+        while i > 0:
+            max_pos = self.find_max(i)
+            if self.heap_list[max_pos] > self.heap_list[i]:
+                temp = self.heap_list[i]
+                self.heap_list[i] = self.heap_list[max_pos]
+                self.heap_list[max_pos] = temp
+            i = i - 1
+
 
 
 
